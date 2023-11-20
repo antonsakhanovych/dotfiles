@@ -1,0 +1,564 @@
+* Table of contents :TOC:
+- [[#important][IMPORTANT]]
+- [[#initialize-package-manager][Initialize package manager]]
+- [[#garbage-collection][Garbage collection]]
+- [[#native-compilation][Native Compilation]]
+- [[#defaults][Defaults]]
+- [[#godmode][Godmode]]
+- [[#modeline][Modeline]]
+- [[#zooming-in-out][Zooming in-out]]
+- [[#theme][Theme]]
+- [[#whitespace-cleanup][Whitespace cleanup]]
+- [[#text-manipulation][Text Manipulation]]
+  - [[#line-manipulation][Line manipulation]]
+  - [[#multiline-cursor][Multiline cursor]]
+- [[#dired][Dired]]
+- [[#ivycounselswiper][Ivy/Counsel/Swiper]]
+- [[#general][General]]
+- [[#magit][Magit]]
+- [[#math][Math]]
+  - [[#proof-general][Proof General]]
+- [[#programming-support][Programming support]]
+  - [[#formatting-buffers][Formatting buffers]]
+  - [[#paredit][Paredit]]
+  - [[#go-to-definitions][Go to definitions]]
+  - [[#company][Company]]
+  - [[#languages][Languages]]
+- [[#org][Org]]
+  - [[#basic-org-config][Basic Org-config]]
+  - [[#ord-bullets][Ord Bullets]]
+  - [[#org-tempo][Org tempo]]
+  - [[#org-code-highlighting][Org code highlighting]]
+  - [[#org-roam][Org-Roam]]
+  - [[#table-of-contents][Table of contents]]
+  - [[#latex][Latex]]
+- [[#perspective][Perspective]]
+- [[#which-key][Which-key]]
+
+* IMPORTANT
+Add this to init.el file
+#+BEGIN_EXAMPLE emacs-lisp
+
+(org-babel-load-file
+(expand-file-name "config.org"
+user-emacs-directory))
+#+END_EXAMPLE
+
+* Initialize package manager
+#+BEGIN_SRC emacs-lisp
+  (require 'package)
+  (add-to-list 'package-archives
+               '("melpa" . "https://melpa.org/packages/") t)
+
+  (unless (package-installed-p 'use-package)
+    (package-install 'use-package))
+  (setq use-package-always-ensure t)
+
+  ;Default auto save directory
+  (setq tramp-auto-save-directory "/tmp")
+  (setq ring-bell-function 'ignore)
+#+END_SRC
+
+
+* Garbage collection
+#+BEGIN_SRC emacs-lisp
+  (use-package gcmh
+    :ensure t
+    :config
+    (gcmh-mode 1))
+  ;; Setting garbage collection threshold
+  (setq gc-cons-threshold 402653184
+        gc-cons-percentage 0.6)
+#+END_SRC
+
+* Native Compilation
+#+BEGIN_SRC emacs-lisp
+  ;; Silence compiler warnings as they can be pretty disruptive
+  (if (boundp 'comp-deferred-compilation)
+      (setq comp-deferred-compilation nil)
+      (setq native-comp-deferred-compilation nil))
+  ;; In noninteractive sessions, prioritize non-byte-compiled source files to
+  ;; prevent the use of stale byte-code. Otherwise, it saves us a little IO time
+  ;; to skip the mtime checks on every *.elc file.
+  (setq load-prefer-newer noninteractive)
+#+END_SRC
+
+* Defaults
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'default-frame-alist '(font . "Iosevka 14"))
+
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(setq inhibit-startup-screen t)
+(setq make-backup-files nil)
+(setq indent-tabs-mode nil)
+(setq compilation-scroll-output t)
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+(defvaralias 'c-basic-offset 'tab-width)
+(global-auto-revert-mode 1)
+(setq global-auto-revert-non-file-buffers t)
+(setq use-dialog-box nil)
+(save-place-mode 1)
+(setq next-line-add-newlines t)
+
+
+(global-display-line-numbers-mode 1)
+(setq display-line-numbers-type 'relative)
+(global-visual-line-mode t)
+
+
+;; Move customization variables to a separate file and load it
+(setq custom-file (locate-user-emacs-file "custom-vars.el"))
+(load custom-file 'noerror 'nomessage)
+
+(use-package all-the-icons)
+(use-package exec-path-from-shell)
+(exec-path-from-shell-initialize)
+#+END_SRC
+
+* Godmode
+#+begin_src emacs-lisp
+;; (use-package god-mode)
+;; (god-mode)
+;; (global-set-key (kbd "C-M-y") #'god-local-mode)
+;; (define-key god-local-mode-map (kbd "i") #'god-local-mode)
+;; (define-key god-local-mode-map (kbd ".") #'repeat)
+;; (global-set-key (kbd "C-x C-1") #'delete-other-windows)
+;; (global-set-key (kbd "C-x C-2") #'split-window-below)
+;; (global-set-key (kbd "C-x C-3") #'split-window-right)
+;; (global-set-key (kbd "C-x C-0") #'delete-window)
+
+;; (define-key god-local-mode-map (kbd "[") #'backward-paragraph)
+;; (define-key god-local-mode-map (kbd "]") #'forward-paragraph)
+
+;; (add-to-list 'god-exempt-major-modes 'dired-mode)
+
+#+end_src
+
+* Modeline
+#+BEGIN_SRC emacs-lisp
+  (use-package doom-modeline
+    :ensure t
+    :init (doom-modeline-mode 1))
+#+END_SRC
+
+* Zooming in-out
+#+BEGIN_SRC emacs-lisp
+;; zoom in/out like we do everywhere else.
+(global-set-key (kbd "C-=") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
+(global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
+(global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
+#+END_SRC
+
+* Theme
+#+BEGIN_SRC emacs-lisp
+  (use-package gruvbox-theme
+    :ensure t
+    :config
+    (load-theme 'gruvbox t))
+#+END_SRC
+
+* Whitespace cleanup
+#+BEGIN_SRC emacs-lisp
+  (use-package whitespace
+    :ensure nil
+    :hook (before-save . whitespace-cleanup))
+
+
+#+END_SRC
+
+* Text Manipulation
+** Line manipulation
+#+BEGIN_SRC emacs-lisp
+  (defun kbd/duplicate-line()
+    (interactive)
+    (move-beginning-of-line 1)
+    (kill-line)
+    (yank)
+    (open-line 1)
+    (next-line 1)
+    (yank))
+
+  (global-set-key (kbd "C-,") 'kbd/duplicate-line)
+
+
+    ;;; Move Text
+  (use-package move-text)
+  (global-set-key (kbd "M-p") 'move-text-up)
+  (global-set-key (kbd "M-n") 'move-text-down)
+#+END_SRC
+** Multiline cursor
+#+begin_src emacs-lisp
+(use-package multiple-cursors)
+(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(global-set-key (kbd "C->")         'mc/mark-next-like-this)
+(global-set-key (kbd "C-<")         'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-<")     'mc/mark-all-like-this)
+(global-set-key (kbd "C-\"")        'mc/skip-to-next-like-this)
+(global-set-key (kbd "C-:")         'mc/skip-to-previous-like-this)
+
+#+end_src
+
+* Dired
+#+BEGIN_SRC emacs-lisp
+  (use-package all-the-icons-dired)
+  (use-package dired-open)
+  (use-package peep-dired)
+
+  (with-eval-after-load 'dired
+    ;;(define-key dired-mode-map (kbd "M-p") 'peep-dired)
+    (define-key dired-mode-map (kbd "h") 'dired-up-directory)
+    (define-key dired-mode-map (kbd "l") 'dired-open-file) ; use dired-find-file instead if not using dired-open package
+    (define-key peep-dired-mode-map (kbd "j") 'peep-dired-next-file)
+    (define-key peep-dired-mode-map (kbd "k") 'peep-dired-prev-file))
+
+  (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
+  ;; Get file icons in dired
+  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+#+END_SRC
+
+* Ivy/Counsel/Swiper
+#+BEGIN_SRC emacs-lisp
+  (use-package counsel
+    :after ivy
+    :config (counsel-mode))
+
+  (use-package ivy
+    :defer 0.1
+    :diminish
+    :bind( :map ivy-minibuffer-map
+           ("TAB" . ivy-alt-done)
+           ("C-n" . ivy-next-line)
+           ("C-p" . ivy-previous-line)
+           :map ivy-switch-buffer-map
+           ("C-p" . ivy-previous-line)
+           ("C-d" . ivy-switch-buffer-kill)
+           :map ivy-reverse-i-search-map
+           ("C-p" . ivy-previous-line)
+           ("C-d" . ivy-reverse-i-search-kill))
+    :custom
+    (setq ivy-count-format "(%d/%d) ")
+    (setq ivy-use-virtual-buffers t)
+    (setq enable-recursive-minibuffers t)
+    :config
+    (ivy-mode 1))
+
+  (use-package ivy-rich
+    :after ivy
+    :custom
+    (ivy-virtual-abbreviate 'full
+     ivy-rich-switch-buffer-align-virtual-buffer t
+     ivy-rich-path-style 'abbrev)
+    :config
+    (ivy-set-display-transformer 'ivy-switch-buffer
+                                 'ivy-rich-switch-buffer-transformer)
+    (ivy-rich-mode 1)) ;; this gets us descriptions in M-x.
+
+  (use-package swiper
+  :after ivy
+  :bind (("C-s" . swiper)
+         ("C-r" . swiper)))
+#+END_SRC
+
+* General
+#+BEGIN_SRC emacs-lisp
+#+END_SRC
+
+
+
+* Magit
+#+BEGIN_SRC emacs-lisp
+(use-package magit
+  :config
+  (global-set-key (kbd "C-c m s") 'magit-status)
+  (global-set-key (kbd "C-c m l") 'magit-log))
+#+END_SRC
+
+* Math
+
+** Proof General
+#+begin_src emacs-lisp
+(use-package proof-general)
+#+end_src
+
+* Programming support
+
+** Formatting buffers
+#+begin_src emacs-lisp
+(use-package format-all
+  :preface
+  (defun prog/format-code ()
+    "Auto-format whole buffer."
+    (interactive)
+    (if (derived-mode-p 'prolog-mode)
+        (prolog-indent-buffer)
+      (format-all-buffer)))
+  :config
+  (global-set-key (kbd "C-M-;") #'prog/format-code)
+  (add-hook 'prog-mode-hook #'format-all-ensure-formatter)
+  (add-hook 'prog-mode-hook #'format-all-mode))
+
+
+
+
+#+end_src
+
+** Paredit
+#+begin_src emacs-lisp
+(use-package paredit)
+
+(defun prog/turn-on-paredit ()
+  (interactive)
+  (paredit-mode 1))
+
+(add-hook 'prog-mode-hook 'prog/turn-on-paredit)
+#+end_src
+
+** Go to definitions
+#+begin_src emacs-lisp
+(use-package dumb-jump)
+(setq xref-backend-functions (remq 'etags--xref-backend xref-backend-functions))
+(add-to-list 'xref-backend-functions #'dumb-jump-xref-activate t)
+;; (dumb-jump-mode 1)
+#+end_src
+** Company
+#+BEGIN_SRC emacs-lisp
+(use-package company
+  :hook (prog-mode . company-mode)
+  :bind (:map company-active-map
+         ("<tab>" . company-complete-selection)
+         ("C-n" . company-select-next)
+         ("C-p" . company-select-previous))
+        (:map prog-mode-map
+         ("<tab>" . company-indent-or-complete-common))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0))
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
+#+END_SRC
+
+** Languages
+
+*** Yassnipet
+#+begin_src emacs-lisp
+(use-package yasnippet)
+(setq yas/triggers-in-field nil)
+(setq yas-snippet-dirs '("~/.config/emacs/snippets"))
+(yas-global-mode 1)
+#+end_src
+
+*** Flycheck
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :ensure t
+    :init (global-flycheck-mode))
+#+END_SRC
+
+*** Compilation
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-c c") #'compile)
+(global-set-key (kbd "C-c r") #'recompile)
+
+#+end_src
+
+*** Compilation Coloring
+#+begin_src emacs-lisp
+(use-package ansi-color
+  :preface
+  (defun colorize-compilation-buffer ()
+    (toggle-read-only)
+    (ansi-color-apply-on-region compilation-filter-start (point))
+    (toggle-read-only))
+  :config
+  (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+)
+#+end_src
+
+*** Languages without additional settings
+#+BEGIN_SRC emacs-lisp
+(use-package yaml-mode)
+(use-package python-mode)
+(use-package nim-mode)
+
+(use-package dockerfile-mode)
+(use-package nasm-mode)
+(use-package zig-mode)
+
+(use-package rjsx-mode)
+
+(use-package go-mode)
+
+#+END_SRC
+
+*** Languages with settings
+
+**** Rust
+#+BEGIN_SRC emacs-lisp
+(use-package rust-mode
+  :config
+  (setq rust-format-on-save t))
+
+(use-package flycheck-rust
+   :config (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
+
+#+End_SRC
+
+**** Haskell
+#+begin_src emacs-lisp
+(use-package hindent)
+(use-package haskell-mode
+  :after (hindent)
+  :hook
+  (haskell-mode . haskell-indent-mode)
+  (haskell-mode . interactive-haskell-mode)
+  (haskell-mode . haskell-doc-mode)
+  (haskell-mode . hindent-mode)
+  )
+
+
+#+end_src
+
+**** TypeScript
+#+begin_src emacs-lisp
+(use-package typescript-mode)
+;; if you use typescript-mode
+
+(use-package tide
+  :ensure t
+  :after (typescript-mode company flycheck)
+  :hook ((typescript-mode . tide-setup)
+         (typescript-mode . tide-hl-identifier-mode)
+         (before-save . tide-format-before-save)))
+
+#+end_src
+
+* Org
+
+** Basic Org-config
+#+begin_src emacs-lisp
+(add-hook 'org-mode-hook 'org-indent-mode)
+(setq org-directory "~/Org/"
+      org-agenda-files '("~/Org/agenda.org")
+      org-default-notes-file (expand-file-name "notes.org" org-directory)
+      org-ellipsis " ▼ "
+      org-log-done 'time
+      org-journal-dir "~/Org/journal/"
+      org-journal-date-format "%B %d, %Y (%A) "
+      org-journal-file-format "%Y-%m-%d.org"
+      org-hide-emphasis-markers t)
+(setq org-src-preserve-indentation nil
+      org-src-tab-acts-natively t
+      org-edit-src-content-indentation 0
+      org-support-shift-select t
+      org-pretty-entities t)
+#+end_src
+
+** Ord Bullets
+#+BEGIN_SRC emacs-lisp
+  (use-package org-bullets)
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+#+END_SRC
+
+** Org tempo
+#+BEGIN_SRC emacs-lisp
+  (use-package org-tempo
+  :ensure nil)
+#+END_SRC
+
+** Org code highlighting
+#+BEGIN_SRC emacs-lisp
+  (setq org-src-fontify-natively t
+      org-src-tab-acts-natively t
+      org-confirm-babel-evaluate nil
+      org-edit-src-content-indentation 0)
+#+END_SRC
+
+** Org-Roam
+#+begin_src emacs-lisp
+(use-package org-roam
+  :ensure t
+  :custom
+  (org-roam-directory "~/Repos/RoamNotes")
+  (org-roam-completion-everywhere t)
+  (org-roam-node-display-template
+   (concat "${title:*} "
+           (propertize "${tags:15}" 'face 'org-tag)))
+  (org-roam-capture-templates
+   '(("d" "default" plain
+      "\n* *${title}*\n\n** Definition\n %?"
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n#+filetags: %^{filetags}\n")
+      :unnarrowed t)
+     ("c" "command" plain
+      "* Command: *${title}*\n\n- *Description*:  %?\n\n- *Usage*: \n\n- *Useful Options*: \n\n- *Examples*: \n\n"
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n")
+      :unnarrowed t)
+     ("m" "math" plain
+      "* *${title}*\n\n- *Definition*:  %?\n\n"
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n#+filetags: mathematics")
+      :unnarrowed t)
+      ))
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert)
+         :map org-mode-map
+         ("C-M-i" . completion-at-point))
+  :config
+  (org-roam-setup))
+
+
+(use-package websocket
+    :after org-roam)
+
+(use-package org-roam-ui
+    :after org-roam
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+#+end_src
+** Table of contents
+#+begin_src emacs-lisp
+(use-package toc-org
+    :commands toc-org-enable
+    :init (add-hook 'org-mode-hook 'toc-org-enable))
+#+end_src
+** Latex
+#+begin_src emacs-lisp
+(use-package tex
+  :ensure auctex)
+#+end_src
+
+* Perspective
+#+begin_src emacs-lisp
+(use-package perspective
+  :custom
+  (persp-mode-prefix-key (kbd "C-c p"))  ; pick your own prefix key here
+  :init
+  (persp-mode))
+#+end_src
+
+* Which-key
+#+begin_src emacs-lisp
+(use-package which-key
+  :init
+  (setq which-key-side-window-location 'bottom
+        which-key-sort-order #'which-key-key-order-alpha
+        which-key-sort-uppercase-first nil
+        which-key-add-column-padding 1
+        which-key-max-display-columns nil
+        which-key-min-display-lines 6
+        which-key-side-window-slot -10
+        which-key-side-window-max-height 0.25
+        which-key-idle-delay 0.8
+        which-key-max-description-length 25
+        which-key-allow-imprecise-window-fit t
+        which-key-separator " → " ))
+(which-key-mode)
+
+#+end_src
