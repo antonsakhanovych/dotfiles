@@ -20,8 +20,8 @@
   - [[#proof-general][Proof General]]
 - [[#programming-support][Programming support]]
   - [[#formatting-buffers][Formatting buffers]]
+  - [[#lsp][LSP]]
   - [[#paredit][Paredit]]
-  - [[#go-to-definitions][Go to definitions]]
   - [[#company][Company]]
   - [[#languages][Languages]]
 - [[#org][Org]]
@@ -46,17 +46,18 @@ user-emacs-directory))
 
 * Initialize package manager
 #+BEGIN_SRC emacs-lisp
-  (require 'package)
-  (add-to-list 'package-archives
-               '("melpa" . "https://melpa.org/packages/") t)
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/") t)
 
-  (unless (package-installed-p 'use-package)
-    (package-install 'use-package))
-  (setq use-package-always-ensure t)
 
-  ;Default auto save directory
-  (setq tramp-auto-save-directory "/tmp")
-  (setq ring-bell-function 'ignore)
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+(setq use-package-always-ensure t)
+
+;Default auto save directory
+(setq tramp-auto-save-directory "/tmp")
+(setq ring-bell-function 'ignore)
 #+END_SRC
 
 
@@ -301,9 +302,15 @@ user-emacs-directory))
   (add-hook 'prog-mode-hook #'format-all-ensure-formatter)
   (add-hook 'prog-mode-hook #'format-all-mode))
 
+#+end_src
 
-
-
+** LSP
+#+begin_src emacs-lisp
+(use-package eglot
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook 'eglot-ensure)
+  (add-to-list 'eglot-stay-out-of 'eldoc))
 #+end_src
 
 ** Paredit
@@ -317,12 +324,6 @@ user-emacs-directory))
 (add-hook 'prog-mode-hook 'prog/turn-on-paredit)
 #+end_src
 
-** Go to definitions
-#+begin_src emacs-lisp
-(use-package dumb-jump)
-(setq xref-backend-functions (remq 'etags--xref-backend xref-backend-functions))
-(add-to-list 'xref-backend-functions #'dumb-jump-xref-activate t)
-;; (dumb-jump-mode 1)
 #+end_src
 ** Company
 #+BEGIN_SRC emacs-lisp
@@ -354,9 +355,9 @@ user-emacs-directory))
 
 *** Flycheck
 #+BEGIN_SRC emacs-lisp
-  (use-package flycheck
-    :ensure t
-    :init (global-flycheck-mode))
+;; (use-package flycheck
+;;   :ensure t
+;;   :init (global-flycheck-mode))
 #+END_SRC
 
 *** Compilation
