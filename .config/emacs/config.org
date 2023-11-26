@@ -301,7 +301,6 @@ user-emacs-directory))
   (global-set-key (kbd "C-M-;") #'prog/format-code)
   (add-hook 'prog-mode-hook #'format-all-ensure-formatter)
   (add-hook 'prog-mode-hook #'format-all-mode))
-
 #+end_src
 
 ** LSP
@@ -310,7 +309,9 @@ user-emacs-directory))
   :ensure t
   :config
   (add-hook 'prog-mode-hook 'eglot-ensure)
-  (add-to-list 'eglot-stay-out-of 'eldoc))
+  (add-to-list 'eglot-stay-out-of 'eldoc)
+  (add-to-list 'eglot-stay-out-of 'fpc-mode))
+
 #+end_src
 
 ** Paredit
@@ -393,6 +394,8 @@ user-emacs-directory))
 (use-package rjsx-mode)
 
 (use-package go-mode)
+(load "~/Repos/dotfiles/.config/emacs/major_modes/fpc-mode/fpc-mode.el")
+(require 'fpc-mode)
 
 #+END_SRC
 
