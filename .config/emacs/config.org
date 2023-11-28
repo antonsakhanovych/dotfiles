@@ -441,6 +441,23 @@ user-emacs-directory))
 
 #+end_src
 
+**** Lisp
+#+begin_src emacs-lisp
+(defun sly-setup ()
+  "Start sly server or connect to it"
+  (sly)
+)
+
+
+(use-package sly
+  :hook (lisp-mode . sly-setup)
+  )
+
+
+
+(setq inferior-lisp-program "sbcl")
+#+end_src
+
 * Org
 
 ** Basic Org-config
