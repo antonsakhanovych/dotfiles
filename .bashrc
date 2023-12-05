@@ -34,7 +34,12 @@ then
     source ~/.bash_profile
 fi
 
-# call starship prompt
+if [ -s ~/.prog_export ]
+then
+    source ~/.prog_export
+fi
+
+    # call starship prompt
 eval "$(starship init bash)"
 
 

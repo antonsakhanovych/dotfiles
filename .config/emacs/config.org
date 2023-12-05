@@ -385,7 +385,11 @@ user-emacs-directory))
 #+BEGIN_SRC emacs-lisp
 (use-package yaml-mode)
 (use-package python-mode)
-(use-package nim-mode)
+(use-package nim-mode
+  :config
+  (add-to-list 'eglot-server-programs
+          '(nim-mode "nimlsp"))
+  )
 
 (use-package dockerfile-mode)
 (use-package nasm-mode)
@@ -394,8 +398,6 @@ user-emacs-directory))
 (use-package rjsx-mode)
 
 (use-package go-mode)
-(load "~/Repos/dotfiles/.config/emacs/major_modes/fpc-mode/fpc-mode.el")
-(require 'fpc-mode)
 
 #+END_SRC
 
@@ -443,17 +445,7 @@ user-emacs-directory))
 
 **** Lisp
 #+begin_src emacs-lisp
-(defun sly-setup ()
-  "Start sly server or connect to it"
-  (sly)
-)
-
-
-(use-package sly
-  :hook (lisp-mode . sly-setup)
-  )
-
-
+(use-package sly)
 
 (setq inferior-lisp-program "sbcl")
 #+end_src

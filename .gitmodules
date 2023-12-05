@@ -1,3 +1,0 @@
-[submodule ".config/emacs/major_modes/fpc-mode"]
-	path = .config/emacs/major_modes/fpc-mode
-	url = https://github.com/thechampagne/fpc-mode.git
