@@ -107,7 +107,7 @@ user-emacs-directory))
 
 (global-display-line-numbers-mode 1)
 (setq display-line-numbers-type 'relative)
-(global-visual-line-mode t)
+(global-visual-line-mode 1)
 
 
 ;; Move customization variables to a separate file and load it
@@ -200,7 +200,6 @@ user-emacs-directory))
 (global-set-key (kbd "C-c C-<")     'mc/mark-all-like-this)
 (global-set-key (kbd "C-\"")        'mc/skip-to-next-like-this)
 (global-set-key (kbd "C-:")         'mc/skip-to-previous-like-this)
-
 #+end_src
 
 * Dired
@@ -297,10 +296,13 @@ user-emacs-directory))
     (if (derived-mode-p 'prolog-mode)
         (prolog-indent-buffer)
       (format-all-buffer)))
+  :commands format-all-mode
+  :hook (prog-mode . format-all-mode)
   :config
   (global-set-key (kbd "C-M-;") #'prog/format-code)
-  (add-hook 'prog-mode-hook #'format-all-ensure-formatter)
-  (add-hook 'prog-mode-hook #'format-all-mode))
+  (setq-default format-all-formatters '(("C"     (astyle "--mode=c"))
+                                        ("Shell" (shfmt "-i" "4" "-ci")))))
+
 #+end_src
 
 ** LSP
@@ -310,7 +312,8 @@ user-emacs-directory))
   :config
   (add-hook 'prog-mode-hook 'eglot-ensure)
   (add-to-list 'eglot-stay-out-of 'eldoc)
-  (add-to-list 'eglot-stay-out-of 'fpc-mode))
+  (add-to-list 'eglot-stay-out-of 'nim-mode)
+)
 
 #+end_src
 
@@ -385,11 +388,7 @@ user-emacs-directory))
 #+BEGIN_SRC emacs-lisp
 (use-package yaml-mode)
 (use-package python-mode)
-(use-package nim-mode
-  :config
-  (add-to-list 'eglot-server-programs
-          '(nim-mode "nimlsp"))
-  )
+
 
 (use-package dockerfile-mode)
 (use-package nasm-mode)
@@ -402,7 +401,14 @@ user-emacs-directory))
 #+END_SRC
 
 *** Languages with settings
+**** Nim
+#+begin_src emacs-lisp
+(use-package nim-mode
+  :config
+  (add-to-list 'eglot-server-programs
+          '(nim-mode "nimlsp")))
 
+#+end_src
 **** Rust
 #+BEGIN_SRC emacs-lisp
 (use-package rust-mode
@@ -449,6 +455,7 @@ user-emacs-directory))
 
 (setq inferior-lisp-program "sbcl")
 #+end_src
+
 
 * Org
 
