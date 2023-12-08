@@ -356,9 +356,9 @@ user-emacs-directory))
 
 *** Flycheck
 #+BEGIN_SRC emacs-lisp
-;; (use-package flycheck
-;;   :ensure t
-;;   :init (global-flycheck-mode))
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode))
 #+END_SRC
 
 *** Compilation
@@ -372,13 +372,13 @@ user-emacs-directory))
 #+begin_src emacs-lisp
 (use-package ansi-color
   :preface
-  (defun colorize-compilation-buffer ()
-    (toggle-read-only)
-    (ansi-color-apply-on-region compilation-filter-start (point))
-    (toggle-read-only))
+  (defun my/ansi-colorize-buffer ()
+    (let ((buffer-read-only nil))
+      (ansi-color-apply-on-region (point-min) (point-max))))
   :config
-  (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+  (add-hook 'compilation-filter-hook 'my/ansi-colorize-buffer)
 )
+
 #+end_src
 
 *** Languages without additional settings
