@@ -28,19 +28,12 @@ alias .5="cd ../../../../.."
 shopt -s autocd
 # enable patterns
 shopt -s extglob
-# execute .bash_profile
-if [ -s ~/.bash_profile ]
-then
-    source ~/.bash_profile
-fi
 
-if [ -s ~/.prog_export ]
+if [ -s ~/.export ]
 then
-    source ~/.prog_export
+    source ~/.export
+    echo "I am export executed"
 fi
 
     # call starship prompt
 eval "$(starship init bash)"
-
-
-
