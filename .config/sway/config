@@ -1,0 +1,7 @@
+set $term alacritty
+set $menu dmenu_path | wmenu | xargs swaymsg exec --
+
+include ~/.config/sway/init.config
+include ~/.config/sway/shortcut.config
+include ~/.config/sway/bar
+include ~/.config/sway/style.config

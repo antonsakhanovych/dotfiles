@@ -29,11 +29,9 @@ shopt -s autocd
 # enable patterns
 shopt -s extglob
 
-if [ -s ~/.export ]
-then
+if [ -s ~/.export ]; then
     source ~/.export
-    echo "I am export executed"
 fi
 
-    # call starship prompt
+# call starship prompt
 eval "$(starship init bash)"
