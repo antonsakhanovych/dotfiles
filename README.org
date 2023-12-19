@@ -14,3 +14,4 @@ Link the files to the home directory
 #+begin_src bash
 stow -S -t ~ --no-folding .
 #+end_src
+** Needed software

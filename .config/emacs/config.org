@@ -4,7 +4,6 @@
 - [[#garbage-collection][Garbage collection]]
 - [[#native-compilation][Native Compilation]]
 - [[#defaults][Defaults]]
-- [[#godmode][Godmode]]
 - [[#modeline][Modeline]]
 - [[#zooming-in-out][Zooming in-out]]
 - [[#theme][Theme]]
@@ -14,10 +13,7 @@
   - [[#multiline-cursor][Multiline cursor]]
 - [[#dired][Dired]]
 - [[#ivycounselswiper][Ivy/Counsel/Swiper]]
-- [[#general][General]]
 - [[#magit][Magit]]
-- [[#math][Math]]
-  - [[#proof-general][Proof General]]
 - [[#programming-support][Programming support]]
   - [[#formatting-buffers][Formatting buffers]]
   - [[#lsp][LSP]]
@@ -31,7 +27,6 @@
   - [[#org-code-highlighting][Org code highlighting]]
   - [[#org-roam][Org-Roam]]
   - [[#table-of-contents][Table of contents]]
-  - [[#latex][Latex]]
 - [[#perspective][Perspective]]
 - [[#which-key][Which-key]]
 
@@ -119,25 +114,6 @@ user-emacs-directory))
 (exec-path-from-shell-initialize)
 #+END_SRC
 
-* Godmode
-#+begin_src emacs-lisp
-;; (use-package god-mode)
-;; (god-mode)
-;; (global-set-key (kbd "C-M-y") #'god-local-mode)
-;; (define-key god-local-mode-map (kbd "i") #'god-local-mode)
-;; (define-key god-local-mode-map (kbd ".") #'repeat)
-;; (global-set-key (kbd "C-x C-1") #'delete-other-windows)
-;; (global-set-key (kbd "C-x C-2") #'split-window-below)
-;; (global-set-key (kbd "C-x C-3") #'split-window-right)
-;; (global-set-key (kbd "C-x C-0") #'delete-window)
-
-;; (define-key god-local-mode-map (kbd "[") #'backward-paragraph)
-;; (define-key god-local-mode-map (kbd "]") #'forward-paragraph)
-
-;; (add-to-list 'god-exempt-major-modes 'dired-mode)
-
-#+end_src
-
 * Modeline
 #+BEGIN_SRC emacs-lisp
   (use-package doom-modeline
@@ -184,7 +160,6 @@ user-emacs-directory))
     (yank))
 
   (global-set-key (kbd "C-,") 'kbd/duplicate-line)
-
 
     ;;; Move Text
   (use-package move-text)
@@ -264,12 +239,6 @@ user-emacs-directory))
          ("C-r" . swiper)))
 #+END_SRC
 
-* General
-#+BEGIN_SRC emacs-lisp
-#+END_SRC
-
-
-
 * Magit
 #+BEGIN_SRC emacs-lisp
 (use-package magit
@@ -277,13 +246,6 @@ user-emacs-directory))
   (global-set-key (kbd "C-c m s") 'magit-status)
   (global-set-key (kbd "C-c m l") 'magit-log))
 #+END_SRC
-
-* Math
-
-** Proof General
-#+begin_src emacs-lisp
-(use-package proof-general)
-#+end_src
 
 * Programming support
 
@@ -309,8 +271,8 @@ user-emacs-directory))
   :ensure t
   :config
   (add-hook 'prog-mode-hook 'eglot-ensure)
-  (add-to-list 'eglot-stay-out-of 'eldoc)
-  (add-to-list 'eglot-stay-out-of 'fpc-mode))
+  (add-to-list 'eglot-stay-out-of 'eldoc))
+
 
 #+end_src
 
@@ -337,11 +299,14 @@ user-emacs-directory))
         (:map prog-mode-map
          ("<tab>" . company-indent-or-complete-common))
   :custom
-  (company-minimum-prefix-length 1)
-  (company-idle-delay 0.0))
+  (setq company-dabbrev-downcase 0)
+  (setq company-idle-delay 0.0)
+  (setq company-minimum-prefix-length nil))
+
 
 (use-package company-box
   :hook (company-mode . company-box-mode))
+
 #+END_SRC
 
 ** Languages
@@ -356,9 +321,16 @@ user-emacs-directory))
 
 *** Flycheck
 #+BEGIN_SRC emacs-lisp
-(use-package flycheck
-  :ensure t
-  :init (global-flycheck-mode))
+;; (use-package flycheck
+;;   :ensure t
+;;   :init (global-flycheck-mode))
+
+;; (use-package flycheck-eglot
+;;   :ensure t
+;;   :after (flycheck eglot)
+;;   :config
+;;   (global-flycheck-eglot-mode 1))
+
 #+END_SRC
 
 *** Compilation
@@ -385,11 +357,11 @@ user-emacs-directory))
 #+BEGIN_SRC emacs-lisp
 (use-package yaml-mode)
 (use-package python-mode)
-(use-package nim-mode
-  :config
-  (add-to-list 'eglot-server-programs
-          '(nim-mode "nimlsp"))
-  )
+;; (use-package nim-mode
+;;   :config
+;;   (add-to-list 'eglot-server-programs
+;;           '(nim-mode "nimlsp"))
+;;   )
 
 (use-package dockerfile-mode)
 (use-package nasm-mode)
@@ -398,6 +370,11 @@ user-emacs-directory))
 (use-package rjsx-mode)
 
 (use-package go-mode)
+(use-package nasm-mode
+  ;; :config
+  ;; (add-to-list 'eglot-server-programs
+  ;;              '((nasm-mode asm-mode) "asm-lsp"))
+  )
 
 #+END_SRC
 
@@ -409,8 +386,8 @@ user-emacs-directory))
   :config
   (setq rust-format-on-save t))
 
-(use-package flycheck-rust
-   :config (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
+;; (use-package flycheck-rust
+;;    :config (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
 
 #+End_SRC
 
@@ -540,11 +517,6 @@ user-emacs-directory))
 (use-package toc-org
     :commands toc-org-enable
     :init (add-hook 'org-mode-hook 'toc-org-enable))
-#+end_src
-** Latex
-#+begin_src emacs-lisp
-(use-package tex
-  :ensure auctex)
 #+end_src
 
 * Perspective

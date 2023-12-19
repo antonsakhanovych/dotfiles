@@ -1,1 +1,1 @@
-alias s='sway'
+alias s='dbus-run-session sway'
