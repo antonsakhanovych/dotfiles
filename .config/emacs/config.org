@@ -333,6 +333,12 @@ user-emacs-directory))
 
 #+END_SRC
 
+
+*** Dap-mode
+#+begin_src emacs-lisp
+(use-package dap-mode)
+#+end_src
+
 *** Compilation
 #+begin_src emacs-lisp
 (global-set-key (kbd "C-c c") #'compile)

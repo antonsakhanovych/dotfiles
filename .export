@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
 SCRIPT_DIR=~/Repos/scripts/src
+export PATH=$SCRIPT_DIR:$PATH
+
 CARGO_DIR=~/.cargo/bin
-export PATH=$CARGO_DIR:$SCRIPT_DIR:$PATH
+GHCUP_DIR=~/.ghcup/bin
+export PATH=$GHCUP_DIR:$CARGO_DIR:$PATH
