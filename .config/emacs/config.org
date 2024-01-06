@@ -4,6 +4,7 @@
 - [[#garbage-collection][Garbage collection]]
 - [[#native-compilation][Native Compilation]]
 - [[#defaults][Defaults]]
+  - [[#sudo-edit][Sudo-edit]]
 - [[#modeline][Modeline]]
 - [[#zooming-in-out][Zooming in-out]]
 - [[#theme][Theme]]
@@ -83,6 +84,7 @@ user-emacs-directory))
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'default-frame-alist '(font . "Iosevka 14"))
 
+
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -113,6 +115,13 @@ user-emacs-directory))
 (use-package exec-path-from-shell)
 (exec-path-from-shell-initialize)
 #+END_SRC
+
+
+** Sudo-edit
+#+begin_src emacs-lisp
+(use-package sudo-edit)
+(global-set-key (kbd "C-c C-r") 'sudo-edit)
+#+end_src
 
 * Modeline
 #+BEGIN_SRC emacs-lisp
