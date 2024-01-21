@@ -271,7 +271,9 @@ user-emacs-directory))
   :config
   (global-set-key (kbd "C-M-;") #'prog/format-code)
   (add-hook 'prog-mode-hook #'format-all-ensure-formatter)
-  (add-hook 'prog-mode-hook #'format-all-mode))
+  (add-hook 'prog-mode-hook #'format-all-mode)
+  (setq-default format-all-formatters '(("C"     (astyle "--style=kr"))
+                                        ("Shell" (shfmt "-i" "4" "-ci")))))
 #+end_src
 
 ** LSP
@@ -352,7 +354,7 @@ user-emacs-directory))
 #+begin_src emacs-lisp
 (global-set-key (kbd "C-c c") #'compile)
 (global-set-key (kbd "C-c r") #'recompile)
-
+(setq-default compile-command "")
 #+end_src
 
 *** Compilation Coloring
