@@ -327,6 +327,7 @@ user-emacs-directory))
 (use-package yasnippet)
 (setq yas/triggers-in-field nil)
 (setq yas-snippet-dirs '("~/.config/emacs/snippets"))
+
 (yas-global-mode 1)
 #+end_src
 
@@ -385,7 +386,7 @@ user-emacs-directory))
 (use-package zig-mode)
 
 (use-package rjsx-mode)
-
+(use-package lua-mode)
 (use-package go-mode)
 (use-package nasm-mode
   ;; :config
