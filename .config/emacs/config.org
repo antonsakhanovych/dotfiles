@@ -10,6 +10,7 @@
 - [[#theme][Theme]]
 - [[#whitespace-cleanup][Whitespace cleanup]]
 - [[#text-manipulation][Text Manipulation]]
+  - [[#goto-matching-parenthesis][Goto matching parenthesis]]
   - [[#line-manipulation][Line manipulation]]
   - [[#multiline-cursor][Multiline cursor]]
 - [[#dired][Dired]]
@@ -157,6 +158,17 @@ user-emacs-directory))
 #+END_SRC
 
 * Text Manipulation
+** Goto matching parenthesis
+#+begin_src emacs-lisp
+(defun goto-match-paren (arg)
+  "Go to the matching parenthesis if on parenthesis, otherwise insert %.
+vi style of % jumping to matching brace."
+  (interactive "p")
+  (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
+        ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
+        (t (self-insert-command (or arg 1)))))
+(global-set-key (kbd "C-%") 'goto-match-paren)
+#+end_src
 ** Line manipulation
 #+BEGIN_SRC emacs-lisp
   (defun kbd/duplicate-line()
