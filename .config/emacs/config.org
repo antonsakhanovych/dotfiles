@@ -28,6 +28,7 @@
   - [[#org-tempo][Org tempo]]
   - [[#org-code-highlighting][Org code highlighting]]
   - [[#org-roam][Org-Roam]]
+  - [[#citations][Citations]]
   - [[#table-of-contents][Table of contents]]
 - [[#perspective][Perspective]]
 - [[#which-key][Which-key]]
@@ -126,9 +127,9 @@ user-emacs-directory))
 
 * Modeline
 #+BEGIN_SRC emacs-lisp
-  (use-package doom-modeline
-    :ensure t
-    :init (doom-modeline-mode 1))
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
 #+END_SRC
 
 * Zooming in-out
@@ -285,7 +286,8 @@ vi style of % jumping to matching brace."
   (add-hook 'prog-mode-hook #'format-all-ensure-formatter)
   (add-hook 'prog-mode-hook #'format-all-mode)
   (setq-default format-all-formatters '(("C"     (astyle "--style=kr"))
-                                        ("Shell" (shfmt "-i" "4" "-ci")))))
+                                        ("Shell" (shfmt "-i" "4" "-ci"))
+                                        ("C#" (astyle "--style=kr")))))
 #+end_src
 
 ** LSP
@@ -345,19 +347,27 @@ vi style of % jumping to matching brace."
 
 *** Flycheck
 #+BEGIN_SRC emacs-lisp
-;; (use-package flycheck
-;;   :ensure t
-;;   :init (global-flycheck-mode))
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode))
 
-;; (use-package flycheck-eglot
-;;   :ensure t
-;;   :after (flycheck eglot)
-;;   :config
-;;   (global-flycheck-eglot-mode 1))
+(use-package flycheck-eglot
+  :ensure t
+  :after (flycheck eglot)
+  :config
+  (global-flycheck-eglot-mode 1))
 
 #+END_SRC
 
 
+
+*** Treesitter
+#+begin_src emacs-lisp
+(use-package tree-sitter)
+(use-package tree-sitter-langs
+  :ensure t
+  :after tree-sitter)
+#+end_src
 *** Dap-mode
 #+begin_src emacs-lisp
 (use-package dap-mode)
@@ -386,7 +396,7 @@ vi style of % jumping to matching brace."
 *** Languages without additional settings
 #+BEGIN_SRC emacs-lisp
 (use-package yaml-mode)
-(use-package python-mode)
+
 ;; (use-package nim-mode
 ;;   :config
 ;;   (add-to-list 'eglot-server-programs
@@ -409,7 +419,23 @@ vi style of % jumping to matching brace."
 #+END_SRC
 
 *** Languages with settings
+**** Python
+#+begin_src emacs-lisp
+(use-package python-mode)
+(use-package elpy
+  :ensure t
+  :init
+  (elpy-enable))
 
+(use-package auto-virtualenv
+  :ensure t
+  :init
+  (use-package pyvenv
+    :ensure t)
+  :config
+  (add-hook 'python-mode-hook 'auto-virtualenv-set-virtualenv))
+
+#+end_src
 **** Rust
 #+BEGIN_SRC emacs-lisp
 (use-package rust-mode
@@ -456,7 +482,11 @@ vi style of % jumping to matching brace."
 
 (setq inferior-lisp-program "sbcl")
 #+end_src
-
+**** C#
+#+begin_src emacs-lisp
+(use-package csharp-mode
+  :ensure t)
+#+end_src
 * Org
 
 ** Basic Org-config
@@ -500,47 +530,95 @@ vi style of % jumping to matching brace."
 
 ** Org-Roam
 #+begin_src emacs-lisp
+
+(setq org-capture-templates
+      ;; other capture templates
+      '(("s" "Slipbox" entry  (file "~/Notes/Zettelkasten/inbox.org")
+       "* %?\n")))
+
+
+
 (use-package org-roam
   :ensure t
   :custom
-  (org-roam-directory "~/Repos/RoamNotes")
+  (org-roam-directory "~/Notes/Zettelkasten")
   (org-roam-completion-everywhere t)
   (org-roam-node-display-template
-   (concat "${title:*} "
-           (propertize "${tags:15}" 'face 'org-tag)))
+   (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
   (org-roam-capture-templates
-   '(("d" "default" plain
-      "\n* *${title}*\n\n** Definition\n %?"
-      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n#+filetags: %^{filetags}\n")
+   '(("p" "permanent" plain "%?"
+      :if-new (file+head "permanent/${title}.org" "#+title: ${title}\n#+date: %U\n")
+      :immediate-finish t
       :unnarrowed t)
-     ("c" "command" plain
-      "* Command: *${title}*\n\n- *Description*:  %?\n\n- *Usage*: \n\n- *Useful Options*: \n\n- *Examples*: \n\n"
-      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n")
+     ("f" "fleeting" plain "%?"
+      :if-new (file+head "fleeting/${title}.org" "#+title: ${title}\n#+date: %U\n")
+      :immediate-finish t
       :unnarrowed t)
-     ("m" "math" plain
-      "* *${title}*\n\n- *Definition*:  %?\n\n"
-      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n#+filetags: mathematics")
-      :unnarrowed t)
-      ))
+     ("l" "literature" plain "%?"
+      :if-new (file+head "literature/${title}.org" "#+title: ${title}\n#+date: %U\n")
+      :immediate-finish t
+      :unnarrowed t)))
   :bind (("C-c n l" . org-roam-buffer-toggle)
          ("C-c n f" . org-roam-node-find)
          ("C-c n i" . org-roam-node-insert)
+         ("C-c n s" . sakhant/org-capture-slipbox)
          :map org-mode-map
          ("C-M-i" . completion-at-point))
   :config
+  (cl-defmethod org-roam-node-type ((node org-roam-node))
+    "Return the TYPE of NODE."
+    (condition-case nil
+        (file-name-nondirectory
+         (directory-file-name
+          (file-name-directory
+           (file-relative-name (org-roam-node-file node) org-roam-directory))))
+      (error "")))
+
+  (defun sakhant/org-capture-slipbox ()
+    (interactive)
+    (org-capture nil "s"))
+
+  (defun sakhant/tag-new-node-as-draft ()
+    (org-roam-tag-add '("draft")))
+  (add-hook 'org-roam-capture-new-node-hook #'sakhant/tag-new-node-as-draft)
   (org-roam-setup))
 
 
 (use-package websocket
-    :after org-roam)
+  :after org-roam)
 
 (use-package org-roam-ui
-    :after org-roam
-    :config
-    (setq org-roam-ui-sync-theme t
-          org-roam-ui-follow t
-          org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t))
+  :after org-roam
+  :config
+  (setq org-roam-ui-sync-theme t
+        org-roam-ui-follow t
+        org-roam-ui-update-on-save t
+        org-roam-ui-open-on-start t))
+#+end_src
+
+
+** Citations
+#+begin_src emacs-lisp
+(use-package biblio)
+(use-package bibtex
+    :custom
+    (bibtex-dialect 'BibTeX)
+    (bibtex-user-optional-fields
+     '(("keywords" "Keywords to describe the entry" "")
+       ("file" "Link to a document file." "" )))
+    (bibtex-align-at-equal-sign t))
+(use-package citar
+  :no-require
+  :custom
+  (org-cite-global-bibliography '("~/Notes/Zettelkasten/references.bib"))
+  (org-cite-insert-processor 'citar)
+  (org-cite-follow-processor 'citar)
+  (org-cite-activate-processor 'citar)
+  (citar-bibliography org-cite-global-bibliography)
+  ;; optional: org-cite-insert is also bound to C-c C-x C-@
+  :bind
+  (:map org-mode-map :package org ("C-c b" . #'org-cite-insert)))
+
 #+end_src
 ** Table of contents
 #+begin_src emacs-lisp

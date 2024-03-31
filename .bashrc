@@ -12,10 +12,14 @@
 
 test -s ~/.alias && . ~/.alias || true
 
+# eza aliases
 alias ls='eza -al --color=always --group-directories-first' # my preferred listing
 alias la='eza -a --color=always --group-directories-first'  # all files and dirs
 alias ll='eza -l --color=always --group-directories-first'  # long format
 alias lt='eza -aT --color=always --group-directories-first' # tree listing
+
+# aliases for other progs
+alias cat='bat --paging=never'
 
 # cd aliases
 alias ..="cd .."
@@ -32,6 +36,8 @@ shopt -s extglob
 if [ -s ~/.export ]; then
     source ~/.export
 fi
+
+export GPG_TTY=$(tty)
 
 # call starship prompt
 eval "$(starship init bash)"
