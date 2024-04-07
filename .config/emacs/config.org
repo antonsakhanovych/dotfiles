@@ -1,11 +1,12 @@
-* Table of contents :TOC:
+* Table of contents                                                     :TOC:
 - [[#important][IMPORTANT]]
 - [[#initialize-package-manager][Initialize package manager]]
 - [[#garbage-collection][Garbage collection]]
 - [[#native-compilation][Native Compilation]]
 - [[#defaults][Defaults]]
-  - [[#sudo-edit][Sudo-edit]]
+- [[#sudo-edit][Sudo-edit]]
 - [[#modeline][Modeline]]
+- [[#vterm][VTerm]]
 - [[#zooming-in-out][Zooming in-out]]
 - [[#theme][Theme]]
 - [[#whitespace-cleanup][Whitespace cleanup]]
@@ -28,7 +29,6 @@
   - [[#org-tempo][Org tempo]]
   - [[#org-code-highlighting][Org code highlighting]]
   - [[#org-roam][Org-Roam]]
-  - [[#citations][Citations]]
   - [[#table-of-contents][Table of contents]]
 - [[#perspective][Perspective]]
 - [[#which-key][Which-key]]
@@ -84,8 +84,7 @@ user-emacs-directory))
 
 * Defaults
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'default-frame-alist '(font . "Iosevka 14"))
-
+(add-to-list 'default-frame-alist '(font . "Iosevka 15"))
 
 (menu-bar-mode -1)
 (tool-bar-mode -1)
@@ -102,7 +101,8 @@ user-emacs-directory))
 (setq use-dialog-box nil)
 (save-place-mode 1)
 (setq next-line-add-newlines t)
-
+(setq confirm-kill-processes nil)
+(setq hscroll-margin 0)
 
 (global-display-line-numbers-mode 1)
 (setq display-line-numbers-type 'relative)
@@ -119,7 +119,7 @@ user-emacs-directory))
 #+END_SRC
 
 
-** Sudo-edit
+* Sudo-edit
 #+begin_src emacs-lisp
 (use-package sudo-edit)
 (global-set-key (kbd "C-c C-r") 'sudo-edit)
@@ -130,7 +130,22 @@ user-emacs-directory))
 (use-package doom-modeline
   :ensure t
   :init (doom-modeline-mode 1))
+(use-package hide-mode-line)
 #+END_SRC
+
+* VTerm
+#+begin_src emacs-lisp
+(use-package vterm
+  :ensure t
+  :hook(vterm-mode . hide-mode-line-mode)
+  :config
+  (setq vterm-kill-buffer-on-exit t)
+  (setq vterm-max-scrollback 5000)
+  (add-hook 'vterm-mode-hook (lambda () (display-line-numbers-mode -1)))
+  (global-set-key (kbd "C-M-<return>") 'vterm)
+)
+
+#+end_src
 
 * Zooming in-out
 #+BEGIN_SRC emacs-lisp
@@ -155,7 +170,6 @@ user-emacs-directory))
     :ensure nil
     :hook (before-save . whitespace-cleanup))
 
-
 #+END_SRC
 
 * Text Manipulation
@@ -169,24 +183,26 @@ vi style of % jumping to matching brace."
         ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
         (t (self-insert-command (or arg 1)))))
 (global-set-key (kbd "C-%") 'goto-match-paren)
+
 #+end_src
+
 ** Line manipulation
 #+BEGIN_SRC emacs-lisp
-  (defun kbd/duplicate-line()
-    (interactive)
-    (move-beginning-of-line 1)
-    (kill-line)
-    (yank)
-    (open-line 1)
-    (next-line 1)
-    (yank))
+(defun kbd/duplicate-line()
+  (interactive)
+  (move-beginning-of-line 1)
+  (kill-line)
+  (yank)
+  (open-line 1)
+  (next-line 1)
+  (yank))
 
-  (global-set-key (kbd "C-,") 'kbd/duplicate-line)
+(global-set-key (kbd "C-,") 'kbd/duplicate-line)
 
-    ;;; Move Text
-  (use-package move-text)
-  (global-set-key (kbd "M-p") 'move-text-up)
-  (global-set-key (kbd "M-n") 'move-text-down)
+  ;;; Move Text
+(use-package move-text)
+(global-set-key (kbd "M-p") 'move-text-up)
+(global-set-key (kbd "M-n") 'move-text-down)
 #+END_SRC
 ** Multiline cursor
 #+begin_src emacs-lisp
@@ -202,20 +218,26 @@ vi style of % jumping to matching brace."
 
 * Dired
 #+BEGIN_SRC emacs-lisp
-  (use-package all-the-icons-dired)
-  (use-package dired-open)
-  (use-package peep-dired)
+(use-package all-the-icons-dired)
+(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 
-  (with-eval-after-load 'dired
-    ;;(define-key dired-mode-map (kbd "M-p") 'peep-dired)
-    (define-key dired-mode-map (kbd "h") 'dired-up-directory)
-    (define-key dired-mode-map (kbd "l") 'dired-open-file) ; use dired-find-file instead if not using dired-open package
-    (define-key peep-dired-mode-map (kbd "j") 'peep-dired-next-file)
-    (define-key peep-dired-mode-map (kbd "k") 'peep-dired-prev-file))
+(use-package dired-open) ;; to configure
+(use-package dired-preview
+  :config
+  (setq dired-preview-ignored-extensions-regexp
+        (concat "\\."
+                "\\(mkv\\|webm\\|mp4\\|mp3\\|ogg\\|m4a"
+                "\\|gz\\|zst\\|tar\\|xz\\|rar\\|zip"
+                "\\|iso\\|epub\\|pdf\\)"))
+  (dired-preview-global-mode 1))
 
-  (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
-  ;; Get file icons in dired
-  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+(use-package dired-ranger
+  :ensure t
+  :bind (:map dired-mode-map
+              ("W" . dired-ranger-copy)
+              ("X" . dired-ranger-move)
+              ("Y" . dired-ranger-paste)))
+
 #+END_SRC
 
 * Ivy/Counsel/Swiper
@@ -270,7 +292,6 @@ vi style of % jumping to matching brace."
 #+END_SRC
 
 * Programming support
-
 ** Formatting buffers
 #+begin_src emacs-lisp
 (use-package format-all
@@ -287,7 +308,8 @@ vi style of % jumping to matching brace."
   (add-hook 'prog-mode-hook #'format-all-mode)
   (setq-default format-all-formatters '(("C"     (astyle "--style=kr"))
                                         ("Shell" (shfmt "-i" "4" "-ci"))
-                                        ("C#" (astyle "--style=kr")))))
+                                        ("C#" (astyle "--style=kr"))
+                                        ("Rust" (rustfmt "--edition" "2021")))))
 #+end_src
 
 ** LSP
@@ -367,6 +389,13 @@ vi style of % jumping to matching brace."
 (use-package tree-sitter-langs
   :ensure t
   :after tree-sitter)
+
+(use-package treesit-auto
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
 #+end_src
 *** Dap-mode
 #+begin_src emacs-lisp
@@ -397,12 +426,6 @@ vi style of % jumping to matching brace."
 #+BEGIN_SRC emacs-lisp
 (use-package yaml-mode)
 
-;; (use-package nim-mode
-;;   :config
-;;   (add-to-list 'eglot-server-programs
-;;           '(nim-mode "nimlsp"))
-;;   )
-
 (use-package dockerfile-mode)
 (use-package nasm-mode)
 (use-package zig-mode)
@@ -410,11 +433,7 @@ vi style of % jumping to matching brace."
 (use-package rjsx-mode)
 (use-package lua-mode)
 (use-package go-mode)
-(use-package nasm-mode
-  ;; :config
-  ;; (add-to-list 'eglot-server-programs
-  ;;              '((nasm-mode asm-mode) "asm-lsp"))
-  )
+(use-package nasm-mode)
 
 #+END_SRC
 
@@ -433,7 +452,11 @@ vi style of % jumping to matching brace."
   (use-package pyvenv
     :ensure t)
   :config
-  (add-hook 'python-mode-hook 'auto-virtualenv-set-virtualenv))
+  (add-hook 'python-mode-hook 'auto-virtualenv-set-virtualenv)
+  ;; Activate on changing buffers
+  (add-hook 'window-configuration-change-hook 'auto-virtualenv-set-virtualenv)
+  ;; Activate on focus in
+  (add-hook 'focus-in-hook 'auto-virtualenv-set-virtualenv))
 
 #+end_src
 **** Rust
@@ -441,9 +464,6 @@ vi style of % jumping to matching brace."
 (use-package rust-mode
   :config
   (setq rust-format-on-save t))
-
-;; (use-package flycheck-rust
-;;    :config (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
 
 #+End_SRC
 
@@ -458,22 +478,17 @@ vi style of % jumping to matching brace."
   (haskell-mode . haskell-doc-mode)
   (haskell-mode . hindent-mode)
   )
-
-
 #+end_src
 
 **** TypeScript
 #+begin_src emacs-lisp
 (use-package typescript-mode)
-;; if you use typescript-mode
-
 (use-package tide
   :ensure t
   :after (typescript-mode company flycheck)
   :hook ((typescript-mode . tide-setup)
          (typescript-mode . tide-hl-identifier-mode)
          (before-save . tide-format-before-save)))
-
 #+end_src
 
 **** Lisp
@@ -482,13 +497,13 @@ vi style of % jumping to matching brace."
 
 (setq inferior-lisp-program "sbcl")
 #+end_src
+
 **** C#
 #+begin_src emacs-lisp
 (use-package csharp-mode
   :ensure t)
 #+end_src
 * Org
-
 ** Basic Org-config
 #+begin_src emacs-lisp
 (add-hook 'org-mode-hook 'org-indent-mode)
@@ -530,13 +545,10 @@ vi style of % jumping to matching brace."
 
 ** Org-Roam
 #+begin_src emacs-lisp
-
 (setq org-capture-templates
       ;; other capture templates
       '(("s" "Slipbox" entry  (file "~/Notes/Zettelkasten/inbox.org")
        "* %?\n")))
-
-
 
 (use-package org-roam
   :ensure t
@@ -583,7 +595,6 @@ vi style of % jumping to matching brace."
   (add-hook 'org-roam-capture-new-node-hook #'sakhant/tag-new-node-as-draft)
   (org-roam-setup))
 
-
 (use-package websocket
   :after org-roam)
 
@@ -596,30 +607,6 @@ vi style of % jumping to matching brace."
         org-roam-ui-open-on-start t))
 #+end_src
 
-
-** Citations
-#+begin_src emacs-lisp
-(use-package biblio)
-(use-package bibtex
-    :custom
-    (bibtex-dialect 'BibTeX)
-    (bibtex-user-optional-fields
-     '(("keywords" "Keywords to describe the entry" "")
-       ("file" "Link to a document file." "" )))
-    (bibtex-align-at-equal-sign t))
-(use-package citar
-  :no-require
-  :custom
-  (org-cite-global-bibliography '("~/Notes/Zettelkasten/references.bib"))
-  (org-cite-insert-processor 'citar)
-  (org-cite-follow-processor 'citar)
-  (org-cite-activate-processor 'citar)
-  (citar-bibliography org-cite-global-bibliography)
-  ;; optional: org-cite-insert is also bound to C-c C-x C-@
-  :bind
-  (:map org-mode-map :package org ("C-c b" . #'org-cite-insert)))
-
-#+end_src
 ** Table of contents
 #+begin_src emacs-lisp
 (use-package toc-org
