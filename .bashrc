@@ -28,6 +28,9 @@ alias .3="cd ../../.."
 alias .4="cd ../../../.."
 alias .5="cd ../../../../.."
 
+# other aliases 
+alias vim='nvim'
+
 # enable autocd
 shopt -s autocd
 # enable patterns

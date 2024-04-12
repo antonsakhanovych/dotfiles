@@ -142,8 +142,8 @@ user-emacs-directory))
   (setq vterm-kill-buffer-on-exit t)
   (setq vterm-max-scrollback 5000)
   (add-hook 'vterm-mode-hook (lambda () (display-line-numbers-mode -1)))
-  (global-set-key (kbd "C-M-<return>") 'vterm)
 )
+(global-set-key (kbd "C-M-<return>") 'vterm)
 
 #+end_src
 
@@ -396,6 +396,7 @@ vi style of % jumping to matching brace."
   :config
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
+
 #+end_src
 *** Dap-mode
 #+begin_src emacs-lisp
