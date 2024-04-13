@@ -32,13 +32,14 @@ return {
                 "pyright",
                 "bashls",
                 "clangd",
-                "sqls",
                 "tsserver",
                 "yamlls",
+                "html",
+                "htmx",
+                "templ",
             },
             handlers = {
                 function(server_name) -- default handler (optional)
-
                     require("lspconfig")[server_name].setup {
                         capabilities = capabilities
                     }
@@ -57,6 +58,13 @@ return {
                         }
                     }
                 end,
+                ["templ"] = function ()
+                    local lspconfig = require("lspconfig")
+                    lspconfig.templ.setup({
+                        capabilities = capabilities,
+                        filetypes = { "html", "templ" },
+                    })
+                end
             }
         })
 
@@ -78,8 +86,8 @@ return {
                 { name = 'nvim_lsp' },
                 { name = 'luasnip' }, -- For luasnip users.
             }, {
-                { name = 'buffer' },
-            })
+                    { name = 'buffer' },
+                })
         })
 
         vim.diagnostic.config({
