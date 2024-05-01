@@ -1,6 +1,16 @@
 vim.g.mapleader = " "
 vim.opt.guicursor = ""
 
+vim.opt.list = true
+vim.opt.listchars = {
+    space = "⋅",
+    tab = "» ",
+    trail = "•",
+    extends = "…",
+    precedes = "…",
+    eol = "↵",
+}
+
 vim.opt.nu = true
 vim.opt.relativenumber = true
 

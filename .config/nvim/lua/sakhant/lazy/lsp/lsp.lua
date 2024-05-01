@@ -24,27 +24,27 @@ return {
 
         require("fidget").setup({})
         require("mason").setup()
+
+        local lang_servers = {
+            "lua_ls",
+            "rust_analyzer",
+            "gopls",
+            "pyright",
+            "bashls",
+            "clangd",
+            "tsserver",
+            "yamlls",
+            "html",
+        }
+
         require("mason-lspconfig").setup({
-            ensure_installed = {
-                "lua_ls",
-                "rust_analyzer",
-                "gopls",
-                "pyright",
-                "bashls",
-                "clangd",
-                "tsserver",
-                "yamlls",
-                "html",
-                "htmx",
-                "templ",
-            },
+            ensure_installed = lang_servers,
             handlers = {
                 function(server_name) -- default handler (optional)
                     require("lspconfig")[server_name].setup {
                         capabilities = capabilities
                     }
                 end,
-
                 ["lua_ls"] = function()
                     local lspconfig = require("lspconfig")
                     lspconfig.lua_ls.setup {
@@ -58,16 +58,10 @@ return {
                         }
                     }
                 end,
-                ["templ"] = function ()
-                    local lspconfig = require("lspconfig")
-                    lspconfig.templ.setup({
-                        capabilities = capabilities,
-                        filetypes = { "html", "templ" },
-                    })
-                end
             }
         })
-
+        vim.api.nvim_set_keymap("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", { noremap = true, silent = true })
+        vim.api.nvim_set_keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", { noremap = true, silent = true })
         local cmp_select = { behavior = cmp.SelectBehavior.Select }
 
         cmp.setup({
@@ -86,8 +80,8 @@ return {
                 { name = 'nvim_lsp' },
                 { name = 'luasnip' }, -- For luasnip users.
             }, {
-                    { name = 'buffer' },
-                })
+                { name = 'buffer' },
+            })
         })
 
         vim.diagnostic.config({

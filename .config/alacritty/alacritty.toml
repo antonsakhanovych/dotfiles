@@ -147,7 +147,8 @@ mods = "Shift"
 history = 5000
 
 [shell]
-program = "/bin/bash"
+program = "tmux"
+# program = "/bin/bash"
 
 [window]
 dynamic_padding = false
