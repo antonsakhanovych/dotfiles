@@ -31,6 +31,7 @@ return {
             "gopls",
             "pyright",
             "bashls",
+            "hls",
             "clangd",
             "tsserver",
             "yamlls",
