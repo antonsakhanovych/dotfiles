@@ -1,5 +1,5 @@
 set $mod Mod4
-set $term alacritty
+set $term wezterm
 
 exec_always "setxkbmap -model pc104 -layout us,ru,ua,tr -variant ,, -option ctrl:nocaps,grp:rctrl_rshift_toggle"
 
