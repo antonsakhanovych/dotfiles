@@ -3,6 +3,7 @@
 SCRIPT_DIR=~/Repos/scripts/src
 CARGO_DIR=~/.cargo/bin
 GHCUP_DIR=~/.ghcup/bin
-export PATH=$SCRIPT_DIR:$GHCUP_DIR:$CARGO_DIR:$PATH
+BIN_DIR=~/bin
+export PATH=$BIN_DIR:$SCRIPT_DIR:$GHCUP_DIR:$CARGO_DIR:$PATH
 
 export GPG_TTY=$(tty)

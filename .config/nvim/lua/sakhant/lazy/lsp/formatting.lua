@@ -9,7 +9,7 @@ return {
                 javascript = { "prettier" },
                 typescript = { "prettier" },
                 css = { "prettier" },
-                html = { "prettier" },
+                html = { "prettier --tab-width 4" },
                 json = { "prettier" },
                 yaml = { "prettier" },
                 markdown = { "prettier" },
@@ -24,5 +24,10 @@ return {
                 timeout_ms = 500,
             },
         })
+        conform.formatters.astyle = {
+            prepend_args = function(self, ctx)
+                return { "--style=kr", "-s4" }
+            end,
+        }
     end,
 }

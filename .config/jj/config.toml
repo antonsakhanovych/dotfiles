@@ -1,0 +1,14 @@
+[user]
+name = "Anton Sakhanovych"
+email = "antonsakhanovych@gmail.com"
+
+[git]
+auto-local-branch = true
+
+[ui]
+editor = "nvim"
+
+[signing]
+sign-all = true
+backend = "gpg"
+key = "815E02FB58162243"

@@ -32,10 +32,12 @@ return {
             "pyright",
             "bashls",
             "hls",
+            "zls",
             "clangd",
             "tsserver",
             "yamlls",
             "html",
+            "htmx",
         }
 
         require("mason-lspconfig").setup({
@@ -63,6 +65,7 @@ return {
         })
         vim.api.nvim_set_keymap("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", { noremap = true, silent = true })
         vim.api.nvim_set_keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", { noremap = true, silent = true })
+        vim.lsp.inlay_hint.enable()
         local cmp_select = { behavior = cmp.SelectBehavior.Select }
 
         cmp.setup({
