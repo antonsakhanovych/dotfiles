@@ -31,13 +31,10 @@ return {
             "gopls",
             "pyright",
             "bashls",
-            "hls",
-            "zls",
             "clangd",
             "tsserver",
             "yamlls",
             "html",
-            "htmx",
         }
 
         require("mason-lspconfig").setup({
