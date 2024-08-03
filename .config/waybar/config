@@ -22,6 +22,9 @@
 	],
 	"modules-right": [
 		"custom/left-arrow-dark",
+        "network",
+		"custom/left-arrow-light",
+		"custom/left-arrow-dark",
 		"pulseaudio",
 		"custom/left-arrow-light",
 		"custom/left-arrow-dark",
@@ -74,7 +77,15 @@
 		"format": "{:%m-%d}",
 		"tooltip": false
 	},
-
+    "network": {
+        // "interface": "wlp2s0", // (Optional) To force the use of this interface
+        "format-wifi": "{essid} ({signalStrength}%)",
+        "format-ethernet": "{ifname}: {ipaddr}/{cidr} ",
+        "format-disconnected": "no conn",
+		"format-alt": "{ipaddr}/{cidr}",
+        "tooltip": false,
+        "interval" : 5
+    },
 	"pulseaudio": {
 		"format": "{icon} {volume:2}%",
 		"format-bluetooth": "{icon}  {volume}%",

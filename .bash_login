@@ -8,3 +8,4 @@ fi
 
 alias s='dbus-run-session sway'
 # alias s='startx'
+. "$HOME/.cargo/env"
