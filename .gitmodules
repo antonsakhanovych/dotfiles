@@ -1,0 +1,8 @@
+[submodule ".config/emacs"]
+	path = .config/emacs
+	url = https://github.com/antonsakhanovych/emacs.d.git
+	branch = master
+[submodule ".config/nvim"]
+	path = .config/nvim
+	url = https://github.com/antonsakhanovych/nvim
+	branch = master
