@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 if test -z "${XDG_RUNTIME_DIR}"; then
     export XDG_RUNTIME_DIR=/tmp/${UID}-runtime-dir
     if ! test -d "${XDG_RUNTIME_DIR}"; then
@@ -6,6 +7,9 @@ if test -z "${XDG_RUNTIME_DIR}"; then
     fi
 fi
 
+if [ -f ~/.bashrc ]; then
+    . .bashrc
+fi
+
 alias s='dbus-run-session sway'
 # alias s='startx'
-. "$HOME/.cargo/env"

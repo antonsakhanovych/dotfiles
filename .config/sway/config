@@ -1,5 +1,5 @@
 set $term wezterm
-set $menu dmenu_path | wmenu-run | xargs swaymsg exec --
+set $menu dmenu_path | wmenu-run | . .bashrc; xargs swaymsg exec --
 
 include ~/.config/sway/bar
 include ~/.config/sway/init.config
