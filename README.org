@@ -1,0 +1,17 @@
+* dotfiles
+** Get started
+Clone this repo
+#+begin_src bash
+git clone https://github.com/antonsakhanovych/dotfiles
+#+end_src
+
+Navigate to the cloned directory
+#+begin_src bash
+cd dotfiles
+#+end_src
+
+Link the files to the home directory
+#+begin_src bash
+stow -S -t ~ --no-folding .
+#+end_src
+** Needed software
