@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# eza aliases
+alias ls='eza -al --color=always --group-directories-first' # my preferred listing
+alias la='eza -a --color=always --group-directories-first'  # all files and dirs
+alias ll='eza -l --color=always --group-directories-first'  # long format
+alias lt='eza -aT --color=always --group-directories-first' # tree listing
+
+# Shutdown aliases
+alias poweroff='sudo poweroff'
+alias reboot='sudo reboot'
+alias zzz='sudo zzz'
+alias ZZZ='sudo ZZZ'
+
+# aliases for other progs
+alias cat='bat --paging=never'
+
+# cd aliases
+alias ..="cd .."
+alias .2="cd ../.."
+alias .3="cd ../../.."
+alias .4="cd ../../../.."
+alias .5="cd ../../../../.."
+
+# other aliases 
+# alias vim='nvim'
+# enable autocd
+shopt -s autocd
+# enable patterns
+shopt -s extglob

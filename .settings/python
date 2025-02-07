@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# Python
+alias nven="python3 -m venv venv"
+alias sven="source ./venv/bin/activate"
+alias dven="deactivate"

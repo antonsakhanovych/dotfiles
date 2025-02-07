@@ -1,0 +1,50 @@
+[user]
+	email = antonsakhanovych@gmail.com
+	name = Anton Sakhanovych
+	signingkey = 815E02FB58162243
+[safe]
+	directory = *
+[commit]
+	gpgSign = true
+[core]
+	editor = vim
+[alias]
+    cp = cherry-pick
+    st = status -s
+    cl = clone
+    ci = commit
+    cm = commit -m
+    co = checkout
+    br = branch
+    diff = diff --word-diff
+    dc = diff --cached
+    a = add
+    aa = add .
+    l = log
+    lp = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+    lc  = "!f() { git lp "$1"^.."$1"; }; f"
+    llc = "!git lp -1"
+    ltp = log --pretty=format:"%h\\ %s\\ [%cn]"
+    lds = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
+    ldr = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=relative
+    lol = log --graph --decorate --pretty=oneline --abbrev-commit
+    lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+    fl = log -u
+    la = "!git config -l | grep alias | cut -c 7-"
+    lt = describe --tags --abbrev=0
+    dlc = diff --cached HEAD^
+    dcr = "!f() { git diff "$1"^.."$1"; }; f"
+    r = reset
+    r1 = reset HEAD^
+    r2 = reset HEAD^^
+    rh = reset --hard
+    rh1 = reset HEAD^ --hard
+    rh2 = reset HEAD^^ --hard
+    sl = stash list
+    spo = stash pop
+    spu = stash push
+[color]
+    branch = auto
+    diff = auto
+    interactive = auto
+    status = auto

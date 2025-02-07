@@ -1,0 +1,7 @@
+set $term kitty
+set $menu wmenu-run
+
+include ~/.config/sway/bar
+include ~/.config/sway/init.config
+include ~/.config/sway/shortcut.config
+include ~/.config/sway/style.config
