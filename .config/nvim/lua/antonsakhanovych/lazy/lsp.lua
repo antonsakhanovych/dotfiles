@@ -32,10 +32,10 @@ return {
             "pyright",
             "bashls",
             "clangd",
-            "tsserver",
             "yamlls",
             "html",
             "nim_langserver",
+            "ocamllsp",
         }
 
         require("mason-lspconfig").setup({

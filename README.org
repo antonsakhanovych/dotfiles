@@ -15,3 +15,89 @@ Link the files to the home directory
 stow -S -t ~ --no-folding .
 #+end_src
 ** Needed software
+*** Must
+1. dbus - enable
+2. seatd - enable
+3. polkit
+4. sway
+5. swaylock
+6. Waybar
+7. wmenu
+8. brightnessctl
+9. grim and slurp for screenshots
+10. noto-fonts - just to have
+11. font-awesome - icons
+12. font-iosevka - tsoding goated font
+13. starship
+
+**** Setup
+1. Add the following into /etc/polkit-1/rules.d/20-shutdown-reboot.rules
+   ```javascript
+   polkit.addRule(function(action, subject) {
+    if ((action.id == "org.freedesktop.consolekit.system.stop" ||
+         action.id == "org.freedesktop.consolekit.system.restart") &&
+        subject.isInGroup("wheel")) {
+            return polkit.Result.YES;
+    }
+});
+   ```
+2. Make the following symlinks in /etc/pipewire/pipewire.conf.d directory
+   /etc/pipewire/pipewire.conf.d/10-wireplumber.conf -> /usr/share/examples/wireplumber/10-wireplumber.conf
+   /etc/pipewire/pipewire.conf.d/20-pipewire-pulse.conf -> /usr/share/examples/pipewire/20-pipewire-pulse.conf
+
+*** Networking
+1. wpa_supplicant - disable/delete
+2. NetworkManager - enable
+3. network-manager-applet
+**** Setup
+1. Add this line to /etc/NetworkManager/NetworkManager.conf
+   `auth-polkit=false`
+*** Seat, session management
+1. Seatd - enable
+2. Polkit
+3. pipewire
+4. wireplumber(part of pipewire package)
+**** Setup
+1. Add yourself to _seatd group
+   `usermod -aG _seatd <yourusername>
+*** Drivers
+1. sof-firmware for audio devices
+2. mesa-dri
+*** Bluetooth
+1. bluez - enable bluetoothd
+2. libspa-bluetooth
+*** Files
+1. Thunar
+2. thunar-volman
+3. gvfs
+**** Setup
+1. Add your user into storage and plugdev groups
+2. add the following into /etc/polkit-1/rules.d/10-udisks2.rules
+   ```javascript
+   polkit.addRule(function(action, subject) {
+    if ((action.id == "org.freedesktop.udisks2.filesystem-mount-system" ||
+         action.id == "org.freedesktop.udisks2.filesystem-mount" ||
+         action.id == "org.freedesktop.udisks2.filesystem-unmount-others" ||
+         action.id == "org.freedesktop.udisks2.eject-media" ||
+         action.id == "org.freedesktop.udisks2.eject-media-other-seat" ||
+         action.id == "org.freedesktop.udisks2.eject-media-system" ||
+         action.id == "org.freedesktop.udisks2.encrypted-unlock" ||
+         action.id == "org.freedesktop.udisks2.power-off-drive" ||
+         action.id == "org.freedesktop.udisks2.power-off-drive-other-seat" ||
+	action.id == "org.freedesktop.udisks2.filesystem-unmount-others") &&
+	subject.isInGroup("storage")) {
+        return polkit.Result.YES;
+    }
+});
+   ```
+*** Screensharing
+1. xdg-desktop-portal - frontend
+2. xdg-desktop-portal-gtk - backend
+3. xdg-desktop-portal-wlr - backend
+*** Misc
+1. inetutils
+2. bind-utils
+3. yubikey-manager
+4. tlp
+5. qemu
+6. qrcp

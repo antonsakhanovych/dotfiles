@@ -7,3 +7,5 @@ done
 
 # call starship prompt
 eval "$(starship init bash)"
+eval "$(fzf --bash)"
+eval "$(mise activate bash)"

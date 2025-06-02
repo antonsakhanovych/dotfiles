@@ -11,8 +11,12 @@ alias reboot='sudo reboot'
 alias zzz='sudo zzz'
 alias ZZZ='sudo ZZZ'
 
+# fzf aliases
+alias fzview='fzf -m --preview="bat --color=always {}"'
+alias fzmod='vim $(fzview)'
+
 # aliases for other progs
-alias cat='bat --paging=never'
+alias cat='bat -p --paging=never'
 
 # cd aliases
 alias ..="cd .."
@@ -21,8 +25,11 @@ alias .3="cd ../../.."
 alias .4="cd ../../../.."
 alias .5="cd ../../../../.."
 
+# git aliases
+alias git-cleanup="git branch -vv | grep ': gone]'|  grep -v "\*" | awk '{ print $1; }' | xargs -r git branch -d"
 # other aliases 
 # alias vim='nvim'
+alias openfile="launch xdg-open"
 # enable autocd
 shopt -s autocd
 # enable patterns

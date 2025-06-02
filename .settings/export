@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 
-SCRIPT_DIR=~/Repos/scripts/src
+SCRIPT_DIR=~/repos/scripts/src
 CARGO_DIR=~/.cargo/bin
 GHCUP_DIR=~/.ghcup/bin
 NIM_DIR=~/.nimble/bin
 BIN_DIR=~/bin
-export PATH=$BIN_DIR:$NIM_DIR:$SCRIPT_DIR:$CARGO_DIR:$GHCUP_DIR:$PATH
+LOCAL_BIN_DIR=~/.local/bin
+export PATH=$LOCAL_BIN_DIR:$BIN_DIR:$NIM_DIR:$SCRIPT_DIR:$CARGO_DIR:$GHCUP_DIR:$PATH
 
 export GPG_TTY=$(tty)
+
+eval "$(opam env)"

@@ -70,15 +70,17 @@
  'nim-mode
  'markdown-mode
  'haskell-mode
- 'hindent)
+ 'hindent
+ 'ormolu)
+
 
 ;; c3
-(setq treesit-language-source-alist
-  '((c3 "https://github.com/c3lang/tree-sitter-c3")))
-(add-to-list 'treesit-language-source-alist
-  '(c3 "https://github.com/c3lang/tree-sitter-c3"))
-(treesit-install-language-grammar 'c3)
-(require 'c3-ts-mode)
+;; (setq treesit-language-source-alist
+;;   '((c3 "https://github.com/c3lang/tree-sitter-c3")))
+;; (add-to-list 'treesit-language-source-alist
+;;   '(c3 "https://github.com/c3lang/tree-sitter-c3"))
+;; (treesit-install-language-grammar 'c3)
+;; (require 'c3-ts-mode)
 
 (defun prog/set-up-whitespace-handling ()
   (interactive)
@@ -93,6 +95,11 @@
 (add-hook 'haskell-mode-hook 'haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'hindent-mode)
 
+(push "~/.elib/contrib/reformatter.el" load-path)
+(push "~/.elib/contrib/ormolu.el" load-path)
+(load-library "ormolu")
+(add-hook 'haskell-mode-hook 'ormolu-format-on-save-mode)
+
 ;; Python
 
 (rc/require 'elpy)
@@ -101,3 +108,28 @@
 
 ;; Coq
 (rc/require 'proof-general)
+
+;; Typescript
+(rc/require 'tide)
+(defun setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
+  ;; company is an optional dependency. You have to
+  ;; install it separately via package-install
+  ;; `M-x package-install [ret] company`
+  (company-mode +1))
+
+;; aligns annotation to the right hand side
+(setq company-tooltip-align-annotations t)
+
+;; formats the buffer before saving
+(add-hook 'before-save-hook 'tide-format-before-save)
+
+;; if you use typescript-mode
+(add-hook 'typescript-mode-hook #'setup-tide-mode)
+;; if you use treesitter based typescript-ts-mode (emacs 29+)
+(add-hook 'typescript-ts-mode-hook #'setup-tide-mode)

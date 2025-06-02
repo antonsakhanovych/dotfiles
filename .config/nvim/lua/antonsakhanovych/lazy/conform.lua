@@ -17,6 +17,7 @@ return {
                 python = { "isort", "black" },
                 c = { "astyle" },
                 cpp = { "astyle" },
+                ocaml = { "ocamlformat" }
             },
             format_on_save = {
                 lsp_fallback = true,
@@ -24,6 +25,16 @@ return {
                 timeout_ms = 500,
             },
         })
+        conform.formatters.ocamlformat = {
+            prepend_args = {
+                "--if-then-else",
+                "vertical",
+                "--break-cases",
+                "fit-or-vertical",
+                "--type-decl",
+                "sparse",
+            }
+        }
         conform.formatters.astyle = {
             prepend_args = function(self, ctx)
                 return { "--style=kr", "-s4" }
