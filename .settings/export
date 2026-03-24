@@ -10,4 +10,3 @@ export PATH=$LOCAL_BIN_DIR:$BIN_DIR:$NIM_DIR:$SCRIPT_DIR:$CARGO_DIR:$GHCUP_DIR:$
 
 export GPG_TTY=$(tty)
 
-eval "$(opam env)"

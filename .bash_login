@@ -7,9 +7,8 @@ if test -z "${XDG_RUNTIME_DIR}"; then
     fi
 fi
 
-if [ -f ~/.bashrc ]; then
-    . .bashrc
-fi
+# Source everything only export file
+. ~/.settings/export
 
 alias s='dbus-run-session sway'
 # alias s='startx'

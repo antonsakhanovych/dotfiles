@@ -56,8 +56,16 @@
                                      "\\\\" "://"))
 (global-ligature-mode t)
 
-;; (require 'simpc-mode)
-;; (add-to-list 'auto-mode-alist '("\\.[hc]\\(pp\\)?\\'" . simpc-mode))
+;;(setenv "PATH" (concat (getenv "PATH") ":" (getenv "HOME") "/.local/share/mise/shims"))
+;;(setq exec-path (append exec-path (list (concat (getenv "HOME") ":" "/.local/share/mise/shims"))))
+(require 'mise)
+(add-hook 'after-init-hook #'global-mise-mode)
+
+(rc/require 'polymode)
+(require 'simpc-mode)
+(add-to-list 'auto-mode-alist '("\\.[hc]\\(pp\\)?\\'" . simpc-mode))
+(require 'typst-mode)
+
 
 (rc/require 'sly)
 (setq inferior-lisp-program "ros -Q run")
@@ -71,7 +79,8 @@
  'markdown-mode
  'haskell-mode
  'hindent
- 'ormolu)
+ 'ormolu
+ 'zig-mode)
 
 
 ;; c3
@@ -102,8 +111,8 @@
 
 ;; Python
 
-(rc/require 'elpy)
-(elpy-enable)
+;; (rc/require 'elpy)
+;; (elpy-enable)
 
 
 ;; Coq

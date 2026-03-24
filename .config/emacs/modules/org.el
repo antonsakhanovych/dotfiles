@@ -90,8 +90,7 @@
 (setq TeX-auto-save t); Enable parse on save.
 (setq-default TeX-master nil)
 (setq TeX-PDF-mode t); PDF mode (rather than DVI-mode)
-(add-hook 'TeX-mode-hook 'flyspell-mode); Enable Flyspell mode for TeX modes such as AUCTeX. Highlights all misspelled words.
-(add-hook 'emacs-lisp-mode-hook 'flyspell-prog-mode); Enable Flyspell program mode for emacs lisp mode, which highlights all misspelled words in comments and strings.
+
 (setq ispell-dictionary "english"); Default dictionary. To change do M-x ispell-change-dictionary RET.
 (add-hook 'TeX-mode-hook
           (lambda () (TeX-fold-mode 1))); Automatically activate TeX-fold-mode.
