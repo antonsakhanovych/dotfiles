@@ -5,6 +5,8 @@ for file in $(find ~/.settings -type f -o -type l); do
     . $file
 done
 
+export SVDIR=~/service
+
 # call starship prompt
 eval "$(starship init bash)"
 eval "$(fzf --bash)"

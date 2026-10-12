@@ -1,7 +1,7 @@
 [user]
 	email = dev@antonsakhanovych.com
 	name = Anton Sakhanovych
-	signingkey = A7D83A279B742B4D
+	signingkey = 3F3D9B662432CD53!
 [safe]
 	directory = *
 [sendemail]
@@ -10,7 +10,7 @@
     smtpencryption = ssl
     smtpserverport = 465
 [commit]
-	gpgSign = true
+	gpgsign = false
 [core]
 	editor = vim
 [alias]
@@ -54,3 +54,5 @@
     diff = auto
     interactive = auto
     status = auto
+[gpg]
+	program = gpg
