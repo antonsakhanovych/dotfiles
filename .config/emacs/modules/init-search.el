@@ -1,4 +1,4 @@
-;;; init-search.el --- ripgrep-backed grep, jump to definition -*- lexical-binding: t; -*-
+;;; init-search.el --- ripgrep-backed grep -*- lexical-binding: t; -*-
 
 ;; Based on https://stegosaurusdormant.com/emacs-ripgrep/
 (use-package grep
@@ -17,10 +17,6 @@
   (grep-apply-setting
    'grep-find-command
    '("rg --hidden --glob '!.git' --color=auto -n -H --no-heading -e '' $(git rev-parse --show-toplevel || pwd)" . 64)))
-
-(use-package dumb-jump
-  :defer t
-  :init (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
 (provide 'init-search)
 
