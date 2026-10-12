@@ -20,6 +20,9 @@
 (use-package racket-mode
   :defer t)
 
+(use-package zig-mode
+  :defer t)
+
 (provide 'init-lang)
 
 ;;; init-lang.el ends here
